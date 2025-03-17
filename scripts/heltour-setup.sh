@@ -1,7 +1,10 @@
 #!/bin/bash
 
 pushd /vagrant
-[[ -e ".env" ]] && source .env || { echo "ERROR: .env not filled out. Ask lakinwecker on slack" 1>&2 ; exit 1; }
+[[ -e ".env" ]] && source .env || {
+  echo "ERROR: .env not filled out. Ask lakinwecker on slack" 1>&2
+  exit 1
+}
 
 # Create database and user
 # TODO: pull this password out of the settings file.
@@ -13,15 +16,15 @@ curl -s --progress-bar http://www.rrweb.org/javafo/current/javafo.jar --output /
 # Ensure we can connect easily without a password
 touch /home/vagrant/.pgpass
 chmod 0600 /home/vagrant/.pgpass
-echo "localhost:*:heltour_lichess4545:heltour_lichess4545:sown shuts combiner chattels" > /home/vagrant/.pgpass
+echo "localhost:*:heltour_lichess4545:heltour_lichess4545:sown shuts combiner chattels" >/home/vagrant/.pgpass
 
 cd /home/vagrant/
+pip install --upgrade pip poetry setuptools
 # Setup virtualenv for heltour
-virtualenv heltour-env --prompt="(heltour):" --python=/usr/bin/python3
+virtualenv heltour-env --prompt="(heltour):" --python=/usr/bin/python3.9
 source /home/vagrant/heltour-env/bin/activate
+pip install --upgrade pip poetry setuptools
 cd /home/vagrant/heltour
-pip3 install --upgrade pip
-pip3 install poetry
 poetry install
 fab update
 fab -R vagrant latestdb
